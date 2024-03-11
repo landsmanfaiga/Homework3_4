@@ -1,0 +1,152 @@
+﻿@using homework3_4Data
+@model ContributorsViewModel
+
+<html>
+    <body>
+    <div b-2ya7vgwtda class="container">
+        <main b-2ya7vgwtda role="main" class="pb-3" style="margin-top: 60px;">
+            <div>
+                <h1>Contributors</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <button class="btn btn-danger" id="new-contributor">New Contributor</button>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control-sm" placeholder="Search" id="search" />
+                    <button class="btn btn-danger" id="clear">Clear</button>
+                </div>
+                <div class="col-md-4">
+                    <h3>Total: @Model.Total.ToString("C")</h3>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <tr>
+                        <th>Deposit</th>
+                        <th>Name</th>
+                        <th>Cell</th>
+                        <th>Balance</th>
+                        <th>Always Include</th>
+                        <th>Actions</th>
+                    </tr>
+                    @foreach(Contributor c in Model.Contributors)
+                    {
+                        <tr>
+                            <td>
+                                <button class="btn btn-success deposit-button" data-contribid="@c.Id">Deposit</button>
+                            </td>
+                            <td>@c.Name</td>
+                            <td>
+                                @c.Cell
+                            </td>
+                            <td>
+                                @c.Balance.ToString("C")
+                            </td>
+                            @if(c.AlwaysInclude)
+                            {
+                                <td style="text-align: center;">
+                                    <i style="font-size:30px" class="bi bi-check"></i>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="text-align: center;">
+                                </td>
+                            }
+                            <td>
+                                <a href="/home/history?id=@c.Id" class="btn btn-primary">Show History</a>
+                                <button data-name="@c.Name" 
+                                        data-cell="@c.Cell" data-id="@c.Id" data-always-include="@c.AlwaysInclude" data-date= "@c.DateCreated"
+                                        class="btn btn-danger edit-contrib">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                    }                     
+                </table>
+            </div>
+            <div class="modal fade new-contrib" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">New Contributor</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="/home/edit">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Name</label>
+                                        <input class="form-control" id="contributor_name" name="name" placeholder="Name" type="text">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Cell</label>
+                                        <input class="form-control" id="contributor_cell" name="cell" placeholder="Cell" type="text">
+                                    </div>
+                                    <div class="form-group col-md-6" id="initialDepositDiv">
+                                        <label class="form-label">Initial Deposit</label>
+                                        <input type="text" class="form-control" name="initialDeposit" placeholder="Initial Deposit">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Created Date</label>
+                                        <input class="form-control" id="contributor_date" name="date" placeholder="Date" type="date">
+                                    </div>
+                                    <div>
+                                        <div class="form-check mt-3 ml-3">
+                                            <input type="checkbox" class="form-check-input" id="contributor_always_include" name="alwaysInclude" value="true">
+                                            <label class="form-check-label" for="contributor_always_include">Always Include</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+            <div class="modal fade deposit" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Deposit for <span id="deposit-name"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="/home/deposit">
+                            <input type="hidden" name="contributorId" />
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Amount</label>
+                                    <input class="form-control" name="amount" placeholder="Deposit Amount" type="text">
+                                </div>
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" name="date" class="form-control" id="datepicker">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <input class="btn btn-primary" name="commit" type="submit" value="Save">
+                            </div>
+                        </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+        </main>
+    </div>
+
+    @section Scripts{
+        <script src="/js/contributor-index.js"></script>
+    }
+
+    </body>
+</html>
